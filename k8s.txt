@@ -1,0 +1,128 @@
+
+面试资料：
+一、云原生、devops
+Cloud表示应用程序位于云中，而不是传统的数据中心；Native表示应用程序从设计之初即考虑到云的环境，原生为云而设计，在云上以最佳姿势运行，充分利用和发挥云平台的弹性+分布式优势
+云原生是基于 分布部署 和 统一运管 的分布式云，以容器、微服务、DevOps等技术为基础建立的一套云技术产品体系
+云原生概括为4个要点：DevOps+持续交付+微服务+容器。
+
+DevOps(Development和Operations的组合词)，是一组过程、方法与系统的统称，用于促进软件开发、技术运营和质量保障之间的沟通、协作与整合。
+DevOps：利用工具或平台让软件生命周期流程(开发、测试、运维、QA)更自动、更高效、更畅通、更可控
+
+二、k8s
+"在v1.12 版本中, 可支持1000个节点，运行30000个Pods。在单个节点上，Kubelet可支持100个Pod，并且性能是v1.1.1的四倍"
+"在v1.18 版本中, Kubernetes 支持的最大节点数为 5000"，kubernetes 默认每个节点只能启动110个pod，可以在kubelet中增加启动参数, rpm包默认安装的目录配置位置
+2021年4月，Kubernetes的发布周期已经正式由每年4次调整为每年3次。
+CoreDNS
+
+kubernetes.default.svc.cluster.local
+kubernetes 资源对象的 labels 和 name 定义被限制 63个字符
+
+pod：Poststart、prestop
+探针：
+	就绪探针：判断容器是否已经就绪
+	存活探针：判断容器应用是否正常
+	启动探针：判断应用启动。这个探针最先执行，然后是就绪探针和存活探针
+	
+Daemoset：部署守护进程，在每个节点部署一个Pod副本
+	节点存储守护进程：glusterd、ceph
+	节点监视：prometheus
+	日志守护进程：fluentd、logstash
+
+Statefulset：应用有状态服务、处理Pod的启动顺序，保留每个Pod的状态，是在唯一标识
+	唯一的网络标识符、持久化存储、优雅的部署和缩放、优雅的删除和种植、自动滚动更新
+	Pod具有稳定性、独一无二的身份标志、
+	SRV：$PodName.$ServiceName
+	有状态的服务还是要使用 operactor，因为有状态的应用需要数据恢复和故障转移 
+
+
+
+kube-scheduler  特定的调度算法和调度策略将 Pod 调度到合适的 Node 节点上
+	(1)希望 Pod 只能运⾏在特定的⼏个节点上，或者这⼏个节点只能⽤来运⾏特定类型的应⽤，这就需要调度器能够可控。
+	(2)kubernetes 的调度器采⽤插件化的形式实现，可以⽅便⽤户进⾏定制或者⼆次开发，⽤户可以⾃定义⼀个调度器并以插件形式和 kubernetes 进⾏集成
+	(3)调度主要分为以下⼏个部分(V1.10.0版本的调度逻辑)：
+		a.首先是预选过程，过滤掉不满⾜条件的节点，这个过程称为 Predicates
+			PodFitsResources：节点上剩余的资源是否⼤于 Pod 请求的资源
+			PodFitsHost：如果 Pod 指定了 NodeName，检查节点名称是否和 NodeName 匹配
+			PodFitsHostPorts：节点上已经使⽤的 port 是否和 Pod 申请的 port 冲突
+			PodSelectorMatches：过滤掉和 Pod 指定的 label 不匹配的节点
+			NoDiskConflict：已经 mount 的 volume 和 Pod 指定的 volume 不冲突，除⾮它们都是只读的
+			CheckNodeDiskPressure：检查节点磁盘空间是否符合要求
+			CheckNodeMemoryPressure：检查节点内存是否够⽤
+		b.然后是优选过程，对通过的节点按照优先级排序，称之为 Priorities
+			LeastRequestedPriority：通过计算 CPU 和内存的使⽤率来决定权重，使⽤率越低权重越⾼，当然正常肯定也是资源是使⽤率越低权重越⾼，能给别的 Pod 运⾏的可能性就越⼤
+			SelectorSpreadPriority：为了更好的⾼可⽤，对同属于⼀个 Deployment 或者 RC 下⾯的多个Pod 副本，尽量调度到多个不同的节点上，当⼀个 Pod 被调度的时候，会先去查找该 Pod 对应的controller，然后查看该 controller 下⾯的已存在的 Pod，运⾏ Pod 越少的节点权重越⾼
+			ImageLocalityPriority：就是如果在某个节点上已经有要使⽤的镜像节点了，镜像总⼤⼩值越⼤，权重就越⾼
+			NodeAffinityPriority：这个就是根据节点的亲和性来计算⼀个权重值，后⾯我们会详细讲解亲和性的使⽤⽅法
+		c.最后从中选择优先级最⾼的节点，如果中间任何⼀步骤有错误，就直接返回错误
+
+	 上面是节点优先级、下面是pod优先级：
+		kind: PriorityClass
+		
+		apiVersion: v1
+		kind: Pod
+		spec:
+		  priorityClassName: high-priority
+		
+		当节点没有⾜够的资源供调度器调度 Pod，导致 Pod 处于 pending 时，抢占(preemption)逻辑就会被触发。 Preemption 会尝试从⼀个节点删除低优先级的 Pod，从⽽释放资源使⾼优先级的 Pod 得到节点资源进⾏部署
+
+
+内部的的些服务 gitlab 之类的也是跑在 Kubernetes 集群上的，此时就不希望对外的⼀些服务和内部的服务跑在同一个节点上，避免内部服务对外部的服务产⽣影响
+有时候服务之间交流比较频繁，⼜希望能够将这两个服务的 Pod 调度到同一个节点
+	节点亲和性( nodeAffinity )   
+	Pod 亲和性( podAffinity )   和 反亲和性 
+亲和性和反亲和性调度
+	软策略
+	硬策略
+容忍度
+	只要节点有这个污点的key,pod都能容忍,值是什么都行;Equal表示只要节点必须精确匹配污点的key和value才能容忍.
+
+nodeSelector（控制粒度大）
+	给 node 绑定 label，给 pod 指定 node 的 label nodeSelector 属于强制性的，如果⽬标节点没有可⽤的资源，Pod 就会⼀直处于 Pending 状态，这就是 nodeSelector 的⽤法
+
+nodeAffinity（控制粒度小）
+	
+
+// 对于 nodeAffinity ⽆论是硬策略还是软策略⽅式，都是调度 pod 到预期节点上，⽽ Taints 恰好与之相反，如果⼀个节点标记为 Taints ，除⾮ pod 也被标识为可以容忍污点节点，否则该 Taints 节点不会被调度 pod。
+
+
+1. 每个工作节点有四个 CPU 内核，最多可容纳 40 个 Pod。扩展到大约 4100 个节点。用于基准测试的应用程序是一个无状态的服务，运行在 100 个服务质量（QoS）有保证的毫核（millicores ）上。
+
+2.Kubernetes工作节点的数量规划？https://www.51cto.com/article/603917.html
+
+3.23 个必知必会的 Kubernetes 高频面试题  https://os.51cto.com/article/706611.html
+
+
+kubernetes 驱逐
+.............
+
+
+================================================================================
+
+tomcat与apache区别如下：
+　　1、Apache是web服务器，Tomcat是应用（java）服务器，它只是一个servlet容器，是Apache的扩展。
+　　2、Apache和Tomcat都可以做为独立的web服务器来运行，但是Apache不能解释java程序（jsp,serverlet）。
+　　3、Apache是普通服务器，本身只支持html即普通网页。不过可以通过插件支持php，还可以与Tomcat连通(单向Apache连接Tomcat，就是说通过Apache可以访问Tomcat资源。反之不然)
+　　4、两者都是一种容器，只不过发布的东西不同：Apache是html容器，功能像IIS一样；Tomcat是jsp/servlet容器，用于发布jsp及java的，类似的有IBM的webshere、EBA的Weblogic，sun的JRun等等。
+　　5、Apache和Tomcat是独立的，在通一台服务器上可以集成。
+
+
+
+
+个 Pod 只能运⾏在特定的⼏个节点上，或者这⼏个节点只能⽤来运⾏特定类型的应⽤，这就需要调度器能够可控
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

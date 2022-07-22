@@ -1,0 +1,128 @@
+
+hello, I am wujun, you can call me aaron, I am glad to join the this interview，as you know from the cv。
+in past nearly two years, I have worked on digital service department in HSBC, I done many project that include 
+papi 、 sapi，and deploy app to SHP, I learned a lot of new knowledge in process，I am good at  micro service、java、docker、k8s、grory , cloud native .
+you can ask me if you hava any question，thanks。
+
+---------------------------------------------------------------------------------------------
+
+in this year I learned a lot of new knowledge and me a lot of new colleagues
+I really like hsbc's working model and atmosphere, I believe I can grow well in HSBC, thanks
+
+==============================================================================================
+
+hello, I am wujun, you can call me aaron, I am glad to join the this interview
+as you know from the cv(curriculum vitae),  I am a devops engineer and workin in plateform team of HSBC
+In the past two years, I done many project that include creating and managing cloud resuour、writing pipeline scripts、resolving issue
+as an engineer, I am good at docker、k8s、java、grory ans also understand at python golang。
+to expect this time self introduction shortly can make you understand me more。
+of course you can ask me if you hava any question，thanks。
+
+日常工作：
+	1.云上资源的部署和管理(管理k8s集群、负载均衡器)
+		aws(ec2、数据库、安全组、EKS、VPC、负责均衡器 elastic load balancing)
+		vpc(amazon virtual private cloud) 需要云上网络打通
+		安全组(web应用程序防火墙、DDOS保护、VPC的网络保护、防火墙管理)
+	
+	2.CICD(jekins、groovy脚本、argocd、helm)
+		有些项目用 helm
+		有些项目用 kustozqzation
+
+	3.日志系统 EFK 的搭建与日常排错工作
+		搭建 ES 集群需要考虑的因素：存储时间、数据量、热存储、冷存储
+
+	4.用到的工具
+		terrfrom：状态文件存在 s3， worksspace区分环境
+		ansible：增加用户、改权限、安装软件并启动、修改配置文件
+
+汇丰pipleline
+	1. failFastchecks:检查相应的配置文件
+	2. checkmax: 代码安全扫面描
+	3. sonar:代码质量管理平台(代码覆盖、改善代码规则、)
+			代码覆盖：通过单元测试，将会显示哪行代码被选中
+			改善编码规则
+			搜寻编码规则：按照名字，插件，激活级别和类别进行查询
+			项目搜寻：按照项目的名字进行查询
+			对比数据：比较同一张表中的任何测量的趋势
+
+aws 上常用的资源:
+	EC2(场景：web服务器、信息服务器、代理服务器、MySQL服务器、Redis服务器、Apache服务器)、数据库、安全组
+	RDS： Amazon RDS 是一项托管式关系型数据库服务，可为您提供六种常见的数据库引擎选项，包括 Amazon Aurora、MySQL、MariaDB、Oracle、Microsoft SQL Server 和 PostgreSQL。Amazon RDS 可处理日常的数据库任务，如预置、打补丁、备份、恢复、故障检测和维修。
+	LB（Load Balancer，(ELB)elastic LB; (ALB)application LB; (NLB)NetworkLB）负载均衡器
+			应用负载均衡器：HTTP、HTTPS、WebSocket                    七层 通过 根据虚拟的 url 或 IP，主机名接收请求，再转向相应的处理服务器。
+		网络负载均衡器：TCP、TLS（安全 TCP）、UDP，               四层 通过 ip+port 
+		网关负载均衡器 - GWLB：在第 3 层（网络层）运行 - IP 协议, 三层 通过 IP
+		MAC负载均衡: 二层负载均衡
+	ElasticCache：云缓存，相当于dns： https://docs.aws.amazon.com/cli/latest/reference/elasticache/index.html
+	ASG：(Auto Scaling Group,ASG前面需要使用LB服务。比如由于监控（查询）服务导致系统性能瓶颈，因此对监控服务设置ASG，达到高可用的目的)，另外还有个ASG (AWS Storage Gateway)
+	S3：存储
+	VPC（Virtual Private Cloud）：虚拟网络
+	EKS：k8s
+	ECS：Amazon ECS 是一项完全托管式容器编排服务，您可以用它轻松部署、管理和扩展容器化的应用程序。
+		https://aws.amazon.com/cn/ecs/resources/
+	Route53：Amazon Route 53是一种高度可用且可扩展的云域名系统（DNS）Web服务。可以将域名转换为IP地址，目前还完全兼容IPv6。Route 53主要用于以下几个方面
+		1. 域名注册
+		2. DNS管理
+		3. 可用性监控，健康检查
+		4. 路由策略，流量管理
+	CloudWatch：ECS 下面的 CloudWatch 监控
+	Lambda： 支持
+		概念1：
+		是AWS在2014年推出的「无服务器」（Serverless）计算服务，用户无需管理服务器，可以更专注自己业务。由于上手简单，而且真正利用了云的优势
+		「无服务器」并不是真的没有服务器，而是由云计算厂商将管理服务器的繁杂事务自动化，为用户提供更贴近业务的接口
+		在 Lambda 里，使用函数（Function）来存储代码，供 Lambda 调用。也正因此，Lambda类的无服务器计算服务也被称作「函数即服务」（Function-as-a-Service / FaaS）。
+		https://zhuanlan.zhihu.com/p/106513886
+		
+		概念2：
+		Lambda 是 AWS 提供的一种计算服务，无需管理或配置服务器，因为 lambda 是serverless。可以根据你的代码进行缩放，通俗点说就是当程序需要处理大量task时，lambda会同时调用很多个lambda，可以达到500-3000个。所以处理起来就会很快。
+		https://blog.csdn.net/libao_sir/article/details/111224830
+		
+		Lambda 为 .NET (PowerShell,C#)、Go、Java、Node.js、Python 和 Ruby 提供运行时。
+		
+		超过 50MB 的部署程序包 -> 如果部署程序包大于 50 MB，建议将函数代码和依赖项上载到 Amazon S3 存储桶。
+		
+		对于编译的语言，您必须创建 .zip 归档部署包才能上传 Lambda 函数代码。
+		对于非编译的语言，Lambda 控制台为非编译语言提供了代码编辑器，使您可以快速修改和测试代码
+		
+		https://docs.aws.amazon.com/zh_cn/lambda/latest/dg/getting-started.html
+	
+	EBS：Amazon Elastic store：块存储服务，相当于电脑硬盘
+	
+	AWS VPN：Lightsail 提供一款易于使用的虚拟专用服务器 (VPS)
+	
+	Cloudfront：Amazon CloudFront 是一项快速内容分发网络 (CDN) 服务，可以安全地以低延迟和高传输速度向全球客户分发数据、视频、应用程序和 API，全部都在开发人员友好的环境中完成。
+		CloudFront 提供最先进的安全功能，包括领域级加密和 HTTPS 支持，与AWS Shield、AWS Web 应用防火墙和 Amazon Route 53 无缝集成，以防止多种类型的攻击，包括网络和应用层 DDoS 攻击
+		CloudFront 可以无缝使用任何 AWS 源，例如 Amazon S3、Amazon EC2, Elastic Load Balancing 或任何自定义 HTTP 源
+	
+	OCP (open capacity platform) k8s：Open Capacity Platform 是基于 Java Spring Cloud 的微服务架构，可以将其部署到 Kubernetes：https://kuboard.cn/learning/k8s-practice/ocp/prepare.html
+		https://www.kancloud.cn/owenwangwen/open-capacity-platform/1318213
+
+DevOps和SRE似乎是同一枚硬币的两个面。他们都旨在弥合开发团队和运维团队之间的鸿沟，都想要提高软件部署的效率和软件运行的可靠性。
+SRE(Site Reliability Engineer)的概念自2003年以来一直存在，比DevOps(2008)还要古老。它是由创建Google的本·特雷诺（Ben Treynor）创造的。根据Treynor所说，SRE是“软件开发工程师开始承担运维人员的任务”
+
+SRE和运维的区别是什么？https://www.zhihu.com/question/58721069?sort=created
+
+saas: software-as -a-service
+paas: platform -as -a-service
+Iaas: infrastructure-as-a-service
+Daas：
+
+kustomize 最简实践：https://www.jianshu.com/p/837d7ae77818
+图解k8s中pod的创建流程：https://blog.csdn.net/weixin_46429290/article/details/121459948
+ArgoCD：https://www.kancloud.cn/willseecloud/jenkins/2424038
+基于Jenkins和Argocd实现CI/CD：https://blog.csdn.net/weixin_40046357/article/details/110459146
+https://www.terraform.io/language
+Dockerfile RUN，CMD，ENTRYPOINT命令区别：https://www.jianshu.com/p/f0a0f6a43907
+云计算核心技术Docker教程：Dockerfile指令详解：https://baijiahao.baidu.com/s?id=1671819772541206048
+深度解读：公有云与私有云有哪些区别？https://zhuanlan.zhihu.com/p/425770050
+
+
+ https://containerd.io/
+ https://jimmysong.io/kubernetes-handbook/
+ https://godleon.github.io/blog/Kubernetes/k8s-Install-traefik-as-Ingress-Controller/
+ https://operatorhub.io/
+ Cloud-init 初始化虚拟机配置： https://einverne.github.io/post/2020/03/cloud-init.html
+ https://www.redhat.com/zh/topics
+ 
+ 
+ 

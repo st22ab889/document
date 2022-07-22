@@ -1,0 +1,74 @@
+Linux 故障排查-测试网络端口连通性:
+	telnet 方法： 协议是 TCP/IP 协议族中的一员，是 Internet 远程登陆服务的标准协议和主要方式。它为用户提供了在本地计算机上完成远程主机工作的能力。因此我们可以使用telnet 来测试远程机器的连通性。
+	weg、curl、ssh 方法
+	tcping 工具方法 == >> 因为 ping 命令只能检测ICMP报文，当对方禁止了 ping 协议，自然 ping 命令也就无法检测了，这个时候可以通过 tcping 命令来检测网络的连通性。
+	tcpdump 当需要测试报文是否发送到对端，也可以使用 tcpdump 命令进行抓包分析。通常使用的方式是通过 tcpdump 命令抓取数据包，然后通过 wireshake 工具进行分析。 
+
+查看linux服务的端口上有多少个连接
+	"ps -ef|grep java"  命令 查询出程序pid
+	"netstat -antup|grep 11435"  通过pid 查询出程序 端口
+	lsof -i:9099 | wc -l   连接数 10
+	
+	"netstat -an"    查看哪些IP连接本机
+	"netstat -nat|grep -i "80"|wc -l"   统计80端口连接数
+	
+	ps -ef|grep httpd|wc -l  统计httpd协议连接数
+	netstat -na|grep ESTABLISHED|wc -l   统计已连接上的，状态为“established
+	
+	查出哪个IP地址连接最多,将其封了.
+	netstat -na|grep ESTABLISHED|awk {print $5}|awk -F: {print $1}|sort|uniq -c|sort -r +0n
+	netstat -na|grep SYN|awk {print $5}|awk -F: {print $1}|sort|uniq -c|sort -r +0n
+
+查看当前进程数：
+	ps aux|grep httpd|wc -l
+
+查看CPU资源  
+	top
+	查看多核CPU占用率，终端上输入“top”，进入界面再输入“1”。
+	vmstat
+	dstat
+
+查看内存使用： 
+	free
+
+查看磁盘：
+	df      统计磁盘的整体情况（已用 可用 挂载点）；	df -hl  更清楚的查看磁盘使用情况；df -a   查看所有文件系统的使用情况
+	du 命令用于查看当前目录的总大小：
+	
+glances 计算机实时监控程序
+	 
+linux下CPU占用率查看方法: https://blog.csdn.net/songweiren1/article/details/119994020
+
+shell 脚本：传参 $1， $2，$3
+
+shell 命令后台执行：
+	command &   // 该命令仍会持续输出将输出打印到STDOUT或STDERR，这也会阻止您在终端上执行其他命令
+	commond &>/dev/null &   // 行命令或脚本在后台，将要运行的命令或脚本重定向到/dev/null,最后加上一个&符号,可以通过jobs命令来查看后台运行的命令或脚本，想要终止后台执行的命令，通过jobs查看出后台执行的进程id，通过kill -9 进程id进行杀掉后台运行的进程
+	nohup command &>/dev/null
+
+Linux后台运行命令有两种方式：
+	cmd & ： 后台运行，关掉终端会停止运行
+	nohup cmd & ： 后台运行，关掉终端不会停止运行
+
+Linux命令后台运行: https://blog.csdn.net/caesar1228/article/details/118853871
+Linux让命令在后台执行： https://blog.csdn.net/qq_32157851/article/details/89174042
+
+linux查看上一条命令的执行结果：
+	Echo $?
+	0 成功 其他失败
+
+如何将Linux命令的结果作为下一个命令的参数：
+	shell 中：   echo $(date)
+	命令中：  echo `date`，  find vim|xargs ls -l -n3 	//-n3表示多行输出
+	如何将Linux命令的结果作为下一个命令的参数：https://www.cnblogs.com/eshizhan/archive/2011/11/30/2269325.html
+	
+脚本原理：
+	每个进程，在/proc目录下面都对应有一个子目录，每个子目录里面都有一个fd目录，每个fd目录里面记录了本进程都打开了哪些文件。
+
+防火墙：iptables和firewalld区别
+	firewalld可以动态修改单条规则,动态管理规则集,允许更新规则而不破坏现有会话和连接。
+	而iptables,在修改了规则后必须得全部刷新才可以生效;
+
+OSI：应用层 -> 表示层 -> 会话层 -> 传输层 -> 网络层 -> 数据链路层 -> 物理层
+TCP/IP：应用层(应用层,表示层,会话层) -> 传输层 -> 网络层 -> 网络接口层(数据链路层,物理层)
+

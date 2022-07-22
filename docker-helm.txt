@@ -1,0 +1,115 @@
+
+docker
+容器三种状态:运行，退出，删除
+docker version 
+docker info
+docker images   //查看当前docker有哪些镜像
+docker image ls
+docker run hello-world //运行一个"hello-world"的容器,现在本地找" hello-world"这个镜像，如果没有就去远程找,找到后就会拉取.
+docker container ls    //查看运行中的容器
+docker container ls --all //查看所有的容器(包括退出的)，不包括删除的容器
+docker ps  //查看运行中的容器
+docker  ps -a//查看所有的容器(包括退出的)，不包括删除的容器.
+docker ps -qa   //列出所有容器的ID(之显示出ID)
+docker rm -f $(docker ps -qa)  // 删除所有容器,这个命令再				  windown下的cmd窗口中不起作用,可能不识别 $符号
+docker Inspect 命令 查看镜像有多少层
+Copy-on-Write机制
+
+scratch作为基础镜像.
+
+Union FS 是有最大层数限制为 127
+
+docker build -t nginx:v3 .
+
+docker rundocker save
+docker load
+docker history
+
+docker.sock
+
+docker system df   // 的查看 镜像、容器、数据卷所占⽤的空间
+docker logs 
+docker run		// 创建一个新的容器并运行一个命令
+docker start	// 启动一个或多个已经被停止的容器
+docker restart	
+docker diff 容器名称或ID   // 查看容器的具体改动
+docker commit   // 可以将容器的存储层保存下来形成一个新的镜像,就是说在原有镜像的基础上再叠加上容器存储层的改变,这样就可以构成一个新的镜像,以后就可以用新的镜像来生成容器
+
+docker network   // 查看docker支持的网络模式
+
+数据共享和持久化：数据卷，挂载主机目录
+
+=============================================================================================================================
+
+helm
+hello-helm/
+├── charts
+├── Chart.yaml
+├── templates
+│   ├── deployment.yaml		 {{ .Release.Name }} -- 这⾥的Release模板对象属于 Helm 内置的⼀种对象,还有其他很多内置的对象
+│   ├── _helpers.tpl			// 放置模板助⼿的地⽅，可以在整个 chart 中重复使⽤
+│   ├── hpa.yaml				// 创建 hpa(HorizontalPodAutoscaler) 的基本 manifest
+│   ├── ingress.yaml
+│   ├── NOTES.txt				// chart 的 “帮助⽂本”。这会在⽤户运⾏ helm install 时显示给⽤户。
+│   ├── serviceaccount.yaml
+│   ├── service.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml
+
+在 templates ⽬录下⾯除了 NOTES.txt ⽂件和以下划线 _ 开头命令的⽂件不会被当做资源清单外，还可以被其他 chart 模板中调⽤，这个就是 Helm 中的 partials ⽂件
+
+helm create hello-helm
+helm install
+helm list
+helm repo 
+helm upgrade
+helm rollback
+helm ls
+helm delete
+helm show    // 查看到 chart 所有的描述信息、包括运⾏⽅式、配置信息等等
+helm repo remove
+helm repo update
+helm status 
+helm search
+
+helm install helm-demo-mysql bitnami/mysql -f config.yaml
+helm-demo2-mysql bitnami/mysql --set primary.persistence.enabled=false
+
+helm upgrade helm-demo2-mysql bitnami/mysql -f upgrade-config.yaml
+helm upgrade helm-demo2-mysql bitnami/mysql -f upgrade-config.yaml --atomic --set auth.rootPassword=5c9idtOapo
+
+helm history 命令查看 release 的历史版本
+helm rollback helm-demo2-mysql 16  回滚到16这个版本
+helm uninstall/delete 
+helm create mychart
+helm install mychartdemo mychart/ --dry-run
+
+ 常⽤的内置对象 
+	release:  .Release.Name
+	Values    从 values.yaml ⽂件和⽤户提供的⽂件传⼊模板的值
+	Template：
+
+模板函数和管道：
+	{{ quote .Values.course.k8s }}  将 quote 值变为字符串
+
+管道：
+	{{ .Values.course.k8s | quote }}
+	 {{ .Values.course.k8s | upper | quote }}
+	
+控制流程：
+	if/else 条件块
+	with 指定范围
+	range 循环块
+
+声明和使⽤命名模板段的操作：
+	define 在模板中声明⼀个新的命名模板
+	template 导⼊⼀个命名模板
+	block 声明了⼀种特殊的可填写的模板区域
+	range 循环块
+
+命名模板
+	抽取公共代码，模板文件可以放在 _helpers.tpl ⽂件中
+
+
+在 Helm 模板中使⽤ include 函数要⽐ template 更好，因为 include 函数可以更好地处理 YAML ⽂件输出格式。
